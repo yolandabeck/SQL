@@ -1,0 +1,66 @@
+-- Customer's First Rental MOnth/ Cohort
+Select
+	p.customer_id,
+	left(min(p.payment_date),7) as cohort
+From
+	payment p
+
+Group by 1
+;
+
+-- Monthly revenue by Cohort
+Select
+	c.cohort,
+	left(min(p.payment_date),7) as month_of revenue,
+	sum(p.amount) as revenue_in_month
+From
+	(Select
+	p.customer_id,
+	left(min(p.payment_date),7) as cohort
+From
+	payment p
+
+Group by 1) c
+	Join payment p
+	on c.customer_id=p.customer_id
+Group by
+	1,
+	2
+
+Order by
+	1,
+	2
+;
+
+Select
+	c.cohort,
+	period_iff(extract(year_month from min(p.payment_date),c.cohort) as rel_month_of revenue,
+	sum(p.amount) as revenue_in_month
+From
+	(Select
+	p.customer_id,
+	extract(year_month from min(p.payment_date)) as cohort
+From
+	payment p
+
+Group by 1) c
+	Join payment p
+	on c.customer_id=p.customer_id
+Group by
+	1,
+	2
+
+Order by
+	1,
+	2
+;
+
+-- Customer's First Rental Month/ Cohort
+Select
+	p.customer_id,
+	extract(year_month from min(p.payment_date)) as cohort
+From
+	payment p
+
+Group by 1
+;
